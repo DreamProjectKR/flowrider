@@ -75,15 +75,15 @@
 
 ---
 
-## **6. DailySettlement (일일 정산 데이터)**
+## **6.   SettlementData (정산 데이터)**
 
 지사가 업로드한 엑셀 파일을 파싱한 결과
 
-(파일은 저장하지 않고 값만 보관)
+(엑셀 파일은 저장하지 않고 값만 보관)
 
 | 컬럼 | 타입 | 설명 |
 | --- | --- | --- |
-| settlement_id (PK) | BIGINT |  |
+|  SettlementData_id (PK) | BIGINT |  |
 | branch_id (FK) | BIGINT | 업로드한 지사 |
 | rider_id (FK) | BIGINT | 해당 라이더 |
 | work_date | DATE | 정산 날짜 |
@@ -157,9 +157,9 @@
 Agency 1 ─── N Branch
 Branch 1 ─── N BranchManager
 Branch N ─── N Rider (via RiderBranchMap)
-Branch 1 ─── N DailySettlement
-Rider 1 ─── N DailySettlement
-DailySettlement → weekly grouped → PayslipGenerated
+Branch 1 ─── N Daily SettlementData
+Rider 1 ─── N Daily SettlementData
+Daily SettlementData → weekly grouped → PayslipGenerated
 PayslipGenerated 1 ─── N MessageLog
 Branch 1 ─── 1 KakaoProfile (optional)
 

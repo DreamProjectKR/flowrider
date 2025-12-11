@@ -19,7 +19,7 @@
 ## 3) 기사별 상세
 
 1. RiderBranchMap으로 소속 확인.
-2. DailySettlement 기간 범위 쿼리.
+2. SettlementData 기간 범위 쿼리.
 3. 그래프/테이블 렌더링.
 4. 정산서 PDF 생성/다운로드.
 
@@ -46,4 +46,3 @@
 2. KakaoProfile 이용해 템플릿/발신키 적용.
 3. MessageLog 기록(성공/실패 코드).
 4. 알림센터에서 필터/재발송.
-

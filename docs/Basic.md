@@ -4,7 +4,7 @@ RiderFlow
 ├── 로그인(Login)
 ├── 회원가입(Sign Up) / (선택)
 ├── 대시보드(Dashboard)
-│     ├── 정산 업로드(Upload Settlement)
+│     ├── 정산 업로드(Upload SettlementData)
 │     ├── 정산 결과(Result Overview)
 │     ├── 기사별 정산 상세(Rider Details)
 │     ├── 지난 정산 내역(Historical Reports)
