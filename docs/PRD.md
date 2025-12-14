@@ -40,8 +40,9 @@
 
 - Rider(기사/라이더): 정산 대상자 엔티티. 1차에서는 로그인 주체가 아님.
 - SettlementData(정산 라인 아이템): 엑셀에서 파싱된 “한 줄”의 정산 데이터.
-- 현재 ERD의 `SettlementData`가 이 역할을 수행한다(대부분 work_date가 있는 일자별 행).
+  - Supabase 테이블: `daily_settlements`(대부분 work_date가 있는 일자별 행)
 - Payslip(명세서): 기간(주간)을 기준으로 SettlementData을 집계하여 생성한 결과물(PDF/이미지).
+  - Supabase 테이블: `payslips`
 
 ## 7. UX 내비게이션 (React Router)
 
@@ -69,7 +70,7 @@ flowchart LR
 upload[파일 업로드] --> parse[파싱/매칭]
 parse --> decision{검증 오류?}
 decision -- yes --> errors[오류 리스트 표시/CSV 다운로드]
-decision -- no --> writeDb[SettlementData 저장]
+decision -- no --> writeDb[daily_settlements 저장]
 errors --> nextAction{재업로드?}
 nextAction -- yes --> upload
 nextAction -- no --> resultPage[정산 결과로 이동]
@@ -81,8 +82,8 @@ resultPage --> detail[기사별 상세/명세서 생성]
 
 ```mermaid
 flowchart LR
-query[기간(주간) SettlementData 조회] --> group[주간 그룹핑]
-group --> payslip[PayslipGenerated 생성]
+query[기간(주간) daily_settlements 조회] --> group[주간 그룹핑]
+group --> payslip[payslips 생성]
 payslip --> store[이미지/PDF 저장(옵션: Storage)]
 store --> notifCenter[알림센터에서 상태 조회]
 ```
@@ -121,7 +122,7 @@ store --> notifCenter[알림센터에서 상태 조회]
 
 - 프로필: 이름, 전화번호, 소속 지사(활성 매핑).
 - 기간별 그래프: 정산액/건수 추이.
-- 상세 테이블: SettlementData 기반 컬럼 렌더링 및 정렬/필터.
+- 상세 테이블: daily_settlements 기반 컬럼 렌더링 및 정렬/필터.
 - 액션: 명세서 생성(PDF/이미지) 및 다운로드.
 
 ### 9.5 정산 내역(기간 기반) `/dashboard/history`
@@ -147,21 +148,21 @@ store --> notifCenter[알림센터에서 상태 조회]
 
 ### 9.8 알림센터 `/dashboard/notifications` (로그 중심)
 
-- 데이터: MessageLog(성공/실패, 응답코드, 이미지 URL, 발송 시각).
+- 데이터: message_logs(성공/실패, 응답코드, 이미지 URL, 발송 시각).
 - 기능: 기간/상태 필터, 페이지네이션.
 - 재발송/발송 트리거는 후순위.
 
 ## 10. 데이터/ERD 매핑 (Supabase)
 
-- 테이블: Agency, Branch, BranchManager, Rider, RiderBranchMap, SettlementData, PayslipGenerated, MessageLog, KakaoProfile(옵션).
-- PRD 용어 매핑: `SettlementData` = SettlementData(정산 라인 아이템).
-- 핵심 흐름: SettlementData(=SettlementData)을 기간(주간)으로 그룹 → PayslipGenerated 생성 → (후순위) MessageLog 기록.
+- 테이블: `agencies`, `branches`, `user_memberships`, `riders`, `rider_branch_map`, `daily_settlements`, `payslips`, `message_logs`, `kakao_profiles`(옵션).
+- PRD 용어 매핑: SettlementData(정산 라인 아이템) = `daily_settlements`, Payslip(명세서) = `payslips`.
+- 핵심 흐름: `daily_settlements`을 기간(주간)으로 그룹 → `payslips` 생성 → (후순위) `message_logs` 기록.
 
 ## 11. 인증/보안 요구
 
 - 인증: 관리자만 Supabase Auth로 로그인(이메일/비밀번호).
 - 권한: RLS로 `branch_id/agency_id` 스코프를 강제.
-- 관리자 프로필(예: BranchManager)은 Supabase Auth 사용자와 매핑되는 앱 테이블로 관리하며, 비밀번호/해시는 DB에 별도 저장하지 않는다.
+- 관리자 프로필/권한(예: `user_memberships`)은 Supabase Auth 사용자와 매핑되는 앱 테이블로 관리하며, 비밀번호/해시는 DB에 별도 저장하지 않는다.
 - Rider 데이터는 로그인과 분리된 엔티티로 관리(조회/편집 권한은 관리자 역할에 한정).
 
 ## 12. 기술 요구

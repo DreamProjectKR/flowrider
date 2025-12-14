@@ -18,15 +18,16 @@
 
 ## 3) 기사별 상세
 
-1. RiderBranchMap으로 소속 확인.
-2. SettlementData 기간 범위 쿼리.
+1. rider_branch_map으로 소속 확인.
+2. daily_settlements 기간 범위 쿼리.
 3. 그래프/테이블 렌더링.
 4. 정산서 PDF 생성/다운로드.
 
 ## 4) 지난 정산 내역
 
-1. 업로드 기록 리스트(기간/지사 필터).
-2. 항목 선택 후 재다운로드 또는 재분석.
+1. 기간 필터(주/월/임의 구간) 선택.
+2. 지사/기사/금액 조건으로 daily_settlements 조회.
+3. 결과 다운로드(PDF/엑셀) 또는 기사별 상세 이동.
 
 ## 5) 기사 관리
 
@@ -42,7 +43,7 @@
 
 ## 7) 알림 발송(후순위)
 
-1. PayslipGenerated 생성 후 발송 요청.
-2. KakaoProfile 이용해 템플릿/발신키 적용.
-3. MessageLog 기록(성공/실패 코드).
+1. payslips 생성 후 발송 요청.
+2. kakao_profiles 이용해 템플릿/발신키 적용.
+3. message_logs 기록(성공/실패 코드).
 4. 알림센터에서 필터/재발송.
